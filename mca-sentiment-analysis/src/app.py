@@ -1,49 +1,82 @@
 import gradio as gr
 import pandas as pd
-from transformers import pipeline
 from wordcloud import WordCloud
-import matplotlib.pyplot as plt
-import io
+import requests
+import json
 
+# Ollama API URL (runs locally)
+OLLAMA_API_URL = "http://localhost:11434/api/generate"
 
-print("Loading models...")
-sentiment_classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
-summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
-print("Models loaded successfully!")
-
+print("Application is ready. Using local Ollama with Llama 3.")
 
 def analyze_sentiment(comment):
-    candidate_labels = ["Supportive", "Opposed", "Suggesting an amendment", "Asking a question"]
-    prediction = sentiment_classifier(comment, candidate_labels)
-    confidences = {label: score for label, score in zip(prediction['labels'], prediction['scores'])}
-    return confidences
+    # Llama 3 uses a specific instruction format
+    prompt = f"""
+    <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+    You are an expert assistant analyzing stakeholder feedback for India's Ministry of Corporate Affairs. Classify the user's comment into one of four categories: Supportive, Opposed, Suggesting an amendment, or Asking a question. Provide only the single-word classification as your final answer.
+    
+    -- Examples --
+    Comment: "I fully support the proposed changes to Section 135."
+    Classification: Supportive
 
-def summarize_text(comment):
-    if len(comment.split()) > 30:
-        summary = summarizer(comment, max_length=100, min_length=25, do_sample=False)
-        return summary[0]['summary_text']
-    else:
-        return "The comment is too short to summarize. Summaries work best for comments longer than 30 words."
+    Comment: "The proposal to increase the compliance burden for LLPs is deeply concerning and should be reconsidered."
+    Classification: Opposed
+
+    Comment: "I suggest that the timeline for private placement offers should be extended from 60 days to 90 days."
+    Classification: Suggesting an amendment
+    
+    Comment: "Could the Ministry please clarify if this applies to foreign subsidiaries?"
+    Classification: Asking a question
+    <|eot_id|><|start_header_id|>user<|end_header_id|>
+    Classify this new comment:
+    Comment: "{comment}"
+    Classification:<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+    """
+
+    payload = {
+        "model": "llama3",
+        "prompt": prompt,
+        "stream": False  # We want the full response at once
+    }
+
+    try:
+        response = requests.post(OLLAMA_API_URL, json=payload)
+        response.raise_for_status() # Raise an exception for bad status codes
+        
+        # The response from Ollama is a JSON string, we need to parse it
+        response_text = response.text
+        data = json.loads(response_text)
+        classification = data.get('response', '').strip()
+
+        labels = ["Supportive", "Opposed", "Suggesting an amendment", "Asking a question"]
+        confidences = {label: 0.0 for label in labels}
+        
+        found = False
+        for label in labels:
+            if label.lower() in classification.lower():
+                confidences[label] = 1.0
+                found = True
+                break
+        
+        if not found:
+             return {"Error: Could not determine classification": 1.0, "Raw Response": classification}
+
+        return confidences
+    except Exception as e:
+        return {str(e): 1.0}
 
 def generate_word_cloud(file_obj):
     df = pd.read_csv(file_obj.name)
     if 'comment_text' in df.columns:
-        text_corpus = " ".join(comment for comment in df.comment_text if isinstance(comment, str))
+        text_corpus = " ".join(str(c) for c in df.comment_text.dropna())
     else:
-        text_corpus = " ".join(comment for comment in df.iloc[:, 0] if isinstance(comment, str))
-    
+        text_corpus = " ".join(str(c) for c in df.iloc[:, 0].dropna())
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text_corpus)
-    
-    plt.figure(figsize=(10, 5))
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis("off")
-    plt.tight_layout(pad=0)
-    
-    return plt
+    return wordcloud.to_image()
 
-
+# --- Create the Gradio Interface ---
 with gr.Blocks(theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# MCA eConsultation AI Analyzer")
+    gr.Markdown("# MCA eConsultation AI Analyzer (Powered by Llama 3)")
     with gr.Tabs():
         with gr.TabItem("Single Comment Analysis"):
             with gr.Row():
@@ -51,21 +84,15 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                 sentiment_output = gr.Label(num_top_classes=4, label="Sentiment Analysis")
             sentiment_button = gr.Button("Analyze Sentiment")
 
-        with gr.TabItem("Summary Generation"):
-            with gr.Row():
-                summary_input = gr.Textbox(lines=10, label="Paste Long Comment Here")
-                summary_output = gr.Textbox(label="Generated Summary", interactive=False)
-            summary_button = gr.Button("Generate Summary")
-
         with gr.TabItem("Overall Word Cloud"):
-            gr.Markdown("Upload a CSV file containing all comments to generate a word cloud. The file should have a column named `comment_text`.")
+            gr.Markdown("Upload a CSV file with all comments to generate a word cloud.")
             wordcloud_input = gr.File(label="Upload Comments CSV")
-            wordcloud_output = gr.Plot(label="Keyword Density Word Cloud") # CORRECTED LINE
+            wordcloud_output = gr.Image(label="Keyword Density Word Cloud")
             wordcloud_button = gr.Button("Generate Word Cloud")
 
     sentiment_button.click(analyze_sentiment, inputs=sentiment_input, outputs=sentiment_output)
-    summary_button.click(summarize_text, inputs=summary_input, outputs=summary_output)
     wordcloud_button.click(generate_word_cloud, inputs=wordcloud_input, outputs=wordcloud_output)
 
+# --- Launch The App ---
 if __name__ == "__main__":
     demo.launch(share=True)
