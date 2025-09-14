@@ -9,9 +9,9 @@ OLLAMA_API_URL = "http://localhost:11434/api/generate"
 
 print("Application is ready. Using local Ollama with Llama 3.")
 
-# Replace your old analyze_sentiment function with this new, smarter version
+
 def analyze_sentiment(comment):
-    # This new prompt has better instructions and more diverse examples
+    
     prompt = f"""
     <|begin_of_text|><|start_header_id|>system<|end_header_id|>
     You are an expert assistant analyzing stakeholder feedback for India's Ministry of Corporate Affairs. Your task is to classify user comments into one of four categories: Supportive, Opposed, Suggesting an amendment, or Asking a question. Pay close attention to sarcastic or nuanced comments where the literal meaning is inverted. Provide only the single-word classification as your final answer.
