@@ -2,7 +2,7 @@
 name = "mca-sentiment-analysis"
 version = "0.1.0"
 description = "AI-powered sentiment analysis for MCA eConsultation feedback."
-authors = ["RUSHAB3979 <you@example.com>"]
+authors = ["RUSHAB3979"]
 package-mode = false
 
 [tool.poetry.dependencies]
