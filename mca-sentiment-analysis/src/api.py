@@ -4,24 +4,22 @@ import pandas as pd
 import requests
 import json
 
-# Initialize the FastAPI app
 app = FastAPI()
 
-# --- IMPORTANT: Allow Cross-Origin Requests ---
-# This allows your team's website to talk to your API
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],  
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],  
+    allow_headers=["*"],  
 )
 
 # Ollama API URL
 OLLAMA_API_URL = "http://localhost:11434/api/generate"
 
 def classify_comment_with_ollama(comment: str):
-    # This is the same logic from our Gradio app
+    
     prompt = f"""
     <|begin_of_text|><|start_header_id|>system<|end_header_id|>
     You are an expert assistant analyzing stakeholder feedback. Classify the user's comment into one of four categories: Supportive, Opposed, Suggesting an amendment, or Asking a question. Provide only the single-word classification.
