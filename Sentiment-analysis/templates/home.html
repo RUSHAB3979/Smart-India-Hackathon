@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="banner">
+    <img src="{{ url_for('static', filename='namo.jpeg') }}" alt="Namo Banner">
+</div>
+
+<div class="services">
+    <div class="service-card card1" data-number="1">
+        <i class="icon">👤</i>
+        <h3>Register your Company</h3>
+    </div>
+    <div class="service-card card2" data-number="2">
+        <i class="icon">🏢</i>
+        <h3>Close your Company</h3>
+    </div>
+    <div class="service-card card3" data-number="3">
+        <i class="icon">👥</i>
+        <h3>Register your LLP</h3>
+    </div>
+    <div class="service-card card4" data-number="4">
+        <i class="icon">❌</i>
+        <h3>Close your LLP</h3>
+    </div>
+</div>
+
+<div class="news-ticker">
+  <div class="ticker-content">
+    Final set of 38 Company Forms [including 13 Annual filing forms, 6 Audit/Cost audit forms] is live on MCA portal.  ||  Stakeholders are advised to create user ID/upgrade existing V2 ID/Merge V2 ID in V3 system under ‘Business user’ category and associate the DSC if not already done.   ||  Users are requested to make payments for fund transfer to IEPFA through MCA portal under V3 Miscellaneous fee service only. Kindly do not make direct payments to Bharat Kosh for such fund transfers. ||  IEPF-5 EVR to be filed as a link form to IEPF-5 in V3 now. Nodal Officer/Deputy Nodal Officer will be able to access the IEPF-5EVR after upgrading their user profile as Nodal/Deputy Nodal officer.  ||  
+  </div>
+</div>
+
+{% endblock %}
+
