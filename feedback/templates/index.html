@@ -1,0 +1,179 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<!-- Header Section -->
+<div class="header">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  <div class="container">
+    <br>
+    <img src="{{ url_for('static', filename='GOI.JPG') }}" alt="Shield Logo" width="250">
+
+    <hr class=" border-light">
+    <h1 class="fw-bold">Public Consultation on Draft Amendments</h1>
+    <p class="lead">
+      The Ministry of Corporate Affairs invites stakeholders to review draft legislation and provide feedback
+      to<br>enhance governance frameworks. Your valuable input helps shape<br>policy decisions that impact businesses
+      and society.
+    </p>
+    <div class="d-flex justify-content-center gap-4 mt-4">
+      <br>
+      <div><i class="bi bi-file-earmark-text"></i> Draft Consultations: <b>12</b></div>
+      <div><i class="bi bi-people"></i> Total Responses: <b>1,247</b></div>
+      <br>
+    </div>
+  </div>
+</div>
+
+<!-- Draft Cards -->
+<div class="containerr my-4">
+  <div class="card card-custom p-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">Companies (Amendment) Bill 2024 - Draft Regulations</h2>
+      <a href="#" class="btn btn-outline-primary">Download PDF</a>
+    </div>
+    <div class="mt-2">
+      <span class="badge bg-primary">Active Consultation</span>
+      <span class="badge bg-secondary">Corporate Law</span>
+    </div>
+    <p class="mt-3">
+      This draft amendment seeks to strengthen corporate governance mechanisms, enhance transparency
+      in board operations, and introduce new measures for compliance requirements for listed companies. The proposed
+      changes aim to align Indian corporate law with international best practices while addressing emerging challenges
+      in the digital economy.
+
+    </p>
+    <br>
+    <div class="card-container">
+      <div class="card">
+        <h3>📅 Published</h3>
+        <p>March 15, 2024</p>
+      </div>
+      <div class="card">
+        <h3>⏰ Deadline</h3>
+        <p>April 30, 2024</p>
+      </div>
+      <div class="card">
+        <h3>ℹ️ Status</h3>
+        <p>Open for Comments</p>
+      </div>
+    </div>
+    <div class="outer">
+      <div class="left">
+        <div class="info-box my-3">
+          <h3>How to Participate</h3>
+          <ul>
+            <li>Review the draft document thoroughly</li>
+            <li>Provide specific, constructive feedback</li>
+            <li>Reference section numbers when commenting</li>
+            <li>Submit comments before the deadline</li>
+          </ul>
+        </div>
+        <div class="information">
+          <h4>Privacy & Data Protection</h4>
+          Your personal information is optional and will be
+          handled in accordance with government data protection policies.
+          Comments may be published anonymously for public review.
+        </div>
+        <div class="container my-3">
+          <div class="card shadow-lg border-0">
+            <div class="card-body p-4">
+
+              <img src="{{ url_for('static', filename='feedback.JPG') }}" alt="Shield Logo" width="250">
+
+              <form method="POST" action="/">
+
+                <!-- Name -->
+                <div class="mb-3">
+                  <label for="name" class="form-label">Your Name</label>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+                </div>
+                <!-- Feedback -->
+                <div class="mb-3">
+                  <label for="comment" class="form-label">Your Feedback</label>
+                  <textarea class="form-control" id="comment" name="comment" rows="5"
+                    placeholder="Write your feedback here..." required></textarea>
+                </div>
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Submit Feedback</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-cards my-5">
+
+        <!-- Sentiment Analysis -->
+        <div class="card">
+          <!-- <h3>Sentiment Analysis</h3> -->
+          <img src="{{ url_for('static', filename='sentiment.JPG') }}" alt="Shield Logo" width="250">
+
+          <div class="progress-row">
+            <span>Supportive</span>
+            <div class="progress-bar">
+              <div class="fill green" style="width:45%"></div>
+            </div>
+            <span>45%</span>
+          </div>
+
+          <div class="progress-row">
+            <span>Neutral</span>
+            <div class="progress-bar">
+              <div class="fill grey" style="width:35%"></div>
+            </div>
+            <span>35%</span>
+          </div>
+
+          <div class="progress-row">
+            <span>Concerns</span>
+            <div class="progress-bar">
+              <div class="fill red" style="width:20%"></div>
+            </div>
+            <span>20%</span>
+          </div>
+
+        </div>
+        <br>
+
+
+
+        <br>
+        <!-- Response Summary -->
+
+        <div class="card my-3">
+          <img src="{{ url_for('static', filename='response.JPG') }}" alt="Shield Logo" width="225">
+
+          <!-- Response Summary Section -->
+          <div class="row text-center my-4">
+
+
+            <!-- Card 1 -->
+            <div class="col-md-12 mb-3">
+              <div class="card shadow-sm p-4 big-card">
+                <h2 class="text-primary">{{ total_comments }}</h2>
+                <p>Total Comments</p>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="col-md-12">
+              <div class="card shadow-sm p-4 big-card">
+                <h2 class="text-success">{{ unique_stakeholders }}</h2>
+                <p>Unique Stakeholders</p>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+  {% endblock %}
