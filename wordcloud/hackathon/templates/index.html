@@ -1,0 +1,27 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WordCloud</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        img {
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            max-width: 90%;
+            height: auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>Generated WordCloud</h1>
+    <p>This wordcloud is generated from your CSV file.</p>
+    <img src="{{ url_for('static', filename='wordcloud.png') }}" alt="WordCloud">
+</body>
+</html>
