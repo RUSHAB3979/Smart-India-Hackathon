@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCA Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="header">
+      <div class="logo-container">
+        <img src="{{ url_for('static', filename='Emblem_of_India_svg.png') }}" alt="Emblem" class="logo">
+      </div>
+      <div class="search-container">
+        <input type="text" placeholder="Search..." class="search-input">
+      </div>
+    </header>
+
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+        <a href="{{ url_for('acts') }}" class="nav-link">Acts & Rules</a>
+        <a href="{{ url_for('econsultation') }}" class="nav-link">e-Consultation</a>
+        {% if session.get('user') %}
+            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+        {% endif %}
+    </nav>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
